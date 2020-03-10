@@ -1,9 +1,10 @@
 setwd ("C:\\Github\\igm_survey_gender\\scraping")
 library("tidyverse")
+library("readstata13")
 library(stringr)
 rm(list=ls())
 # load data
-df<-read_delim("data_output_US.csv",delim="|")
+df<-read_delim("data_output_eu.csv",delim="|")
 # Confidence
 df1<-df%>%select(Confidence,Name)%>%
   separate(Confidence,into = paste("CONF", 1:1000, sep = "_"),sep="¦")%>%
@@ -37,10 +38,9 @@ df7<-df%>%select(Profile,Name)%>%
         Profile=str_trim(Profile))%>%
   rename(Institution=Profile)
 # gender
-gender<-read_csv("usgender.csv")
+gender<-read_csv("eugender.csv")
 # merge
-df_m<-merge(df7,gender,by="Name")
-df_m<-merge(df_m,df1,by=c("Name"))
+df_m<-merge(gender,df1,by=c("Name"))
 df_m<-merge(df_m,df2,by=c("Name","Question"))
 df_m<-merge(df_m,df3,by=c("Name","Question"))
 df_m<-merge(df_m,df4,by=c("Name","Question"))
@@ -49,8 +49,8 @@ df_m<-merge(df_m,df5,by=c("Name","Question"))%>%
       mutate(Question=as.numeric(str_remove(Question, "CONF_")))%>%
       arrange(Name,Question)%>%
       filter(!is.na(Medianconf))
-# write csv
-write_excel_csv(df_m,"cleaned_data_US.csv")
+# write to Stata
 
+save.dta13(df_m,"cleaned_data_EU.dta")
 # Plot
 #ggplot(df4,aes(x=Deviation_from_median_confidence))+geom_bar()
