@@ -32,6 +32,7 @@ df5<-df%>%select(Comment,Name)%>%
 df6<-df%>%select(Questions,Name)%>%
   separate(Questions,into = paste("CONF", 1:1000, sep = "_"),sep="¦")%>%
   pivot_longer(1:1000, names_to="Question",values_to = "Qtext")
+write_excel_csv(df6%>%filter(Name=="Nicholas Bloom"),"manualdata//questionsEU.csv")
 # Institution 
 df7<-df%>%select(Profile,Name)%>%
   mutate(Profile=str_remove(Profile, Name),
@@ -47,7 +48,7 @@ df_m<-merge(gender,df1,by=c("Name"))
 df_m<-merge(df_m,df2,by=c("Name","Question"))
 df_m<-merge(df_m,df3,by=c("Name","Question"))
 df_m<-merge(df_m,df4,by=c("Name","Question"))
-df_m<-merge(df_m,df6,by=c("Name","Question"))
+df_m<-merge(df_m,df6,by=c("Name","Question"),all.x = TRUE)
 df_m<-merge(df_m,df5,by=c("Name","Question"))%>%
       mutate(Question=as.numeric(str_remove(Question, "CONF_")))%>%
       arrange(Name,Question)%>%
