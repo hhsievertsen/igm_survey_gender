@@ -32,7 +32,8 @@ df5<-df%>%select(Comment,Name)%>%
 df6<-df%>%select(Questions,Name)%>%
   separate(Questions,into = paste("CONF", 1:1000, sep = "_"),sep="¦")%>%
   pivot_longer(1:1000, names_to="Question",values_to = "Qtext")
-write_excel_csv(df6%>%filter(Name=="Nicholas Bloom"),"manualdata//questionsEU.csv")
+
+
 # Institution 
 df7<-df%>%select(Profile,Name)%>%
   mutate(Profile=str_remove(Profile, Name),
@@ -53,8 +54,8 @@ df_m<-merge(df_m,df5,by=c("Name","Question"))%>%
       mutate(Question=as.numeric(str_remove(Question, "CONF_")))%>%
       arrange(Name,Question)%>%
       filter(!is.na(Medianconf))
-# qtext
-df_m<-merge(df_m,topic,by="Qtext")
+# topic
+df_m<-merge(df_m,topic,by="Qtext",all.x = TRUE)
 # write to Stata
 write_excel_csv(df_m,"datacleaning/cleaned_data_EU.csv")
 save.dta13(df_m,"datacleaning/cleaned_data_EU.dta")

@@ -53,8 +53,8 @@ df_m<-merge(df_m,df5,by=c("Name","Question"))%>%
   mutate(Question=as.numeric(str_remove(Question, "CONF_")))%>%
   arrange(Name,Question)%>%
   filter(!is.na(Medianconf))
-# qtext
-df_m<-merge(df_m,topic,by="Qtext")
+# topic
+df_m<-merge(df_m,topic,by="Qtext",all.x = TRUE)
 # write to Stata
 write_excel_csv(df_m,"datacleaning/cleaned_data_US.csv")
 save.dta13(df_m,"datacleaning/cleaned_data_US.dta")
